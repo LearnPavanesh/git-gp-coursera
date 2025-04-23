@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 app = FastAPI()
 app.add_event_handler("startup", startup_event)
 
+
 @app.exception_handler(RequestValidationError)
 def validation_exception_handler(request, exc):
     return JSONResponse(status_code=400, content={"message": "Validation error", "errors": exc.errors()})
@@ -97,3 +98,7 @@ def get_offer_items():
     cursor.execute("SELECT id, name, price, is_offer FROM items WHERE is_offer = 1")
     rows = cursor.fetchall()
     return [Item(id=row[0], name=row[1], price=row[2], is_offer=bool(row[3])) for row in rows]
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
